@@ -1,0 +1,1 @@
+<ProductCard product={data[1]} loading={false}/>

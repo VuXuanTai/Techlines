@@ -4,10 +4,21 @@ import connectToDatabase from './db.js';
 import express from 'express';
 import cors from 'cors';
 
+//Routes
+import productRoutes from './routes/productRoutes.js';
+
+
+
+
 connectToDatabase();
 const app = express()
 app.use(express.json());
 app.use(cors());
+
+
+app.use('/api/products', productRoutes);
+
+//localhost:5000//api/products
 
 const port = 5000;
 
