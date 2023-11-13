@@ -3,7 +3,7 @@ import ProductCard from "../components/ProductCard.jsx";
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import {useSelector, useDispatch} from 'react-redux';
-import {getProducts} from '../redux/actions/productActions.js'
+import { getProducts } from '../redux/actions/productActions';
 
 
 
@@ -12,7 +12,7 @@ const ProductsScreen = () => {
     const {loading, error, products, pagination} = useSelector((state) => state.product);
 
     useEffect(() => {
-        dispatch(getProducts());
+        dispatch(getProducts(1));
     }, [dispatch]);
 
     return (
