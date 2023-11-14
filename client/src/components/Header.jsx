@@ -13,8 +13,10 @@ const Header = () => {
   return (
     <>
         { favoritesToggled ? (
-            <IconButton icon={<MdOutlineFavorite size='20px' onClick={() => dispatch(toggleFavorites(false))}/>} variant='ghost'  />
-        ) :(<IconButton icon={<MdOutlineFavoriteBorder size='20px' onClick={() => dispatch(toggleFavorites(true))}/>} variant='ghost' />)
+            <IconButton 
+            onClick={() => dispatch(toggleFavorites(false))}
+            icon={<MdOutlineFavorite size='20px' />} variant='ghost'  />
+        ) :(<IconButton icon={<MdOutlineFavoriteBorder size='20px' />} variant='ghost' onClick={() => dispatch(toggleFavorites(true))}/>)
 
 
         }
