@@ -1,6 +1,6 @@
-import { Box, Center, Wrap, WrapItem, Button } from "@chakra-ui/react";
+import { Box, Center, Wrap, WrapItem, Button, Alert, AlertIcon, AlertTitle } from "@chakra-ui/react";
 import ProductCard from "../components/ProductCard.jsx";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getProducts } from "../redux/actions/productActions";
 import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
@@ -28,13 +28,20 @@ const ProductsScreen = () => {
             minHeight="80vh"
             mx={{ base: "12", md: "20", lg: "32" }}
           >
-            {products.map((product) => (
-              <WrapItem key={product.id}>
-                <Center w="250px" h="450pz">
-                  <ProductCard product={product} loading={loading} />
-                </Center>
-              </WrapItem>
-            ))}
+            {error ? (
+              <Alert status="error">
+                <AlertIcon />
+                <AlertTitle>We are sorry!</AlertTitle>
+              </Alert>
+            ) : (
+              products.map((product) => (
+                <WrapItem key={product.id}>
+                  <Center w="250px" h="450pz">
+                    <ProductCard product={product} loading={loading} />
+                  </Center>
+                </WrapItem>
+              ))
+            )}
           </Wrap>
           {!favoritesToggled && (
             <Wrap spacing="10px" justify="center" p="5">
@@ -52,7 +59,9 @@ const ProductsScreen = () => {
                     }
                     key={i}
                     onClick={() => paginationButtonClick(i + 1)}
-                  >{i+1}</Button>
+                  >
+                    {i + 1}
+                  </Button>
                 );
               })}
               <Button
