@@ -5,8 +5,12 @@ import {
   Badge,
   Flex,
   IconButton,
+  Icon,
+  Button,
+  Tooltip,
   Skeleton,
 } from "@chakra-ui/react";
+import { FiShoppingCart } from "react-icons/fi";
 import { BiExpand } from "react-icons/bi";
 import React, { useState } from "react";
 import {
@@ -32,8 +36,8 @@ const ProductCard = ({ product, loading }) => {
         shadow="md"
       >
         <Image
-        onMouseEnter={() => setIsShown(true)}
-        onMouseLeave={() => setIsShown(false)}
+          onMouseEnter={() => setIsShown(true)}
+          onMouseLeave={() => setIsShown(false)}
           src={product.images[isShown && product.images.length === 2 ? 1 : 0]}
           fallbackSrc="https://via.placeholder.com/150"
           alt={product.name}
@@ -81,10 +85,27 @@ const ProductCard = ({ product, loading }) => {
           )}
           <IconButton
             icon={<BiExpand size="20" />}
-            as={ReactLink} to={`/product/${product._id}`}
+            as={ReactLink}
+            to={`/product/${product._id}`}
             colorScheme="cyan"
             size="sm"
           />
+          <Tooltip
+            label="Add to cart"
+            bg="white"
+            placement={"top"}
+            color={"gray.800"}
+            fontSize={"1.2em"}
+          >
+            <Button
+              variant="ghost"
+              display={"flex"}
+              isDisabled={product.stock <= 0}
+              colorScheme="cyan"
+            >
+              <Icon as={FiShoppingCart} h={7} w={7} alignSelf={"center"} />
+            </Button>
+          </Tooltip>
         </Flex>
       </Box>
     </Skeleton>
