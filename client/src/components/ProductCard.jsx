@@ -5,12 +5,10 @@ import {
   Badge,
   Flex,
   IconButton,
-  Icon,
-  Button,
   Tooltip,
   Skeleton,
+  useToast,
 } from "@chakra-ui/react";
-import { FiShoppingCart } from "react-icons/fi";
 import { BiExpand } from "react-icons/bi";
 import React, { useState } from "react";
 import {
@@ -20,11 +18,38 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { MdOutlineFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
 import { Link as ReactLink } from "react-router-dom";
+import { addCartItem } from "../redux/actions/cartActions";
+import { useEffect } from "react";
+import { TbShoppingCartPlus } from "react-icons/tb";
 
 const ProductCard = ({ product, loading }) => {
   const dispatch = useDispatch();
   const { favorites } = useSelector((state) => state.product);
   const [isShown, setIsShown] = useState(false);
+  const { cartItems } = useSelector((state) => state.cart);
+  const toast = useToast();
+  const [cartPlusDisabled, setCartPlusDisabled] = useState(false);
+
+  useEffect(() => {
+    const item = cartItems.find((cartItem) => cartItem.id === product._id);
+    if (item && item.qty === product.stock) {
+      setCartPlusDisabled(true);
+    }
+  }, [product, cartItems]);
+
+  const addItem = (id) => {
+    if (cartItems.some((cartItem) => cartItem.id ===  id)) {
+      const item = cartItems.find((cartItem) => cartItem.id ===  id);
+      dispatch(addCartItem(id, item.qty + 1));
+    } else {
+      dispatch(addCartItem(id, 1));
+    }
+    toast({
+      description: "Item has been added",
+      status: "success",
+      isClosable: true,
+    })
+  };
 
   return (
     <Skeleton isLoaded={!loading} _hover={{ size: "1.5" }}>
@@ -91,20 +116,23 @@ const ProductCard = ({ product, loading }) => {
             size="sm"
           />
           <Tooltip
-            label="Add to cart"
-            bg="white"
-            placement={"top"}
-            color={"gray.800"}
-            fontSize={"1.2em"}
+            isDisabled={!cartPlusDisabled}
+            hasArrow
+            label={
+              !cartPlusDisabled
+                ? "Your reached the maximum quantity jof the product. "
+                : product.stock <= 0
+                ? "out of stock"
+                : ""
+            }
           >
-            <Button
-              variant="ghost"
-              display={"flex"}
-              isDisabled={product.stock <= 0}
-              colorScheme="cyan"
-            >
-              <Icon as={FiShoppingCart} h={7} w={7} alignSelf={"center"} />
-            </Button>
+            <IconButton
+              isDisabled={product.stock <= 0 || cartPlusDisabled}
+              onClick={() => addItem(product._id)}
+              icon={<TbShoppingCartPlus size="20" />}
+              size='sm'
+              colorScheme='cyan'
+            />
           </Tooltip>
         </Flex>
       </Box>

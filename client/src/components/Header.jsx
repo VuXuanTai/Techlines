@@ -9,18 +9,33 @@ import {
   Text,
   useColorModeValue as mode,
   useDisclosure,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Divider,
+  Image,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Spacer,
+  useToast,
+  Toast,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BsPhoneFlip } from "react-icons/bs";
 import { Link as ReactLink } from "react-router-dom";
 import { MdOutlineFavorite, MdOutlineFavoriteBorder } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import NavLink from "./NavLink";
 import ColorModeToggle from "./ColorModeToggle";
-import { BiUserCheck } from "react-icons/bi";
+import { BiUserCheck, BiLogInCircle } from "react-icons/bi";
 import { toggleFavorites } from "../redux/actions/productActions";
-import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { TbShoppingCart } from "react-icons/tb";
+import { logout } from "../redux/actions/userActions";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 
 const Links = [
   { name: "Products", route: "/products" },
@@ -32,10 +47,20 @@ const Links = [
 const Header = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
+  const toast = useToast();
   const { favoritesToggled } = useSelector((state) => state.product);
   const { cartItems } = useSelector((state) => state.cart);
+  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {}, [favoritesToggled, dispatch]);
+  const logoutHandler = () => {
+    dispatch(logout());
+    toast({
+      description: 'You have been logged out.',
+      status: 'success',
+      isClosable: 'true',
+    })
+  }
 
   return (
     <Box bg={mode(`cyan.300`, "gray.900")} px="4">
@@ -64,7 +89,7 @@ const Header = () => {
               mt="-6"
               fontSize="sm"
             >
-              {cartItems.length[2]}
+              {cartItems.length}
             </Text>
           )}
         </Flex>
@@ -122,7 +147,63 @@ const Header = () => {
           </HStack>
         </HStack>
         <Flex alignItems="center">
-          <BiUserCheck />
+          {userInfo ? (
+            <Menu>
+              <MenuButton
+                rounded="full"
+                variant="link"
+                cursor="pointer"
+                minW="0"
+              >
+                <HStack>
+                  <BiUserCheck size="30" />
+                  <ChevronDownIcon />
+                </HStack>
+              </MenuButton>
+              <MenuList>
+                <HStack>
+                  <Text pl="3" as="i">
+                    {userInfo.email}
+                  </Text>
+                </HStack>
+                <Divider py="1" />
+                <MenuItem as={ReactLink} to="/order-history">
+                  Order History
+                </MenuItem>
+                <MenuItem as={ReactLink} to="/profile">
+                  Profile
+                </MenuItem>
+                {userInfo.isAdmin && (
+                  <>
+                    <MenuDivider />
+                    <MenuItem as={ReactLink} to="/admin-console">
+                      Admin Console
+                    </MenuItem>
+                  </>
+                )}
+                <MenuDivider />
+                <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+              </MenuList>
+            </Menu>
+          ) : (
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                variant="ghost"
+                cursor="pointer"
+                icon={<BiLogInCircle size="25px" />}
+              />
+              <MenuList>
+                <MenuItem as={ReactLink} to="/login" p="2" fontWeight="400" variant='link'>
+                  Sign In
+                </MenuItem>
+                <MenuDivider />
+                <MenuItem as={ReactLink} to="/registration" p="2" fontWeight="400" variant='link'>
+                  Sign Up
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          )}
         </Flex>
       </Flex>
       <Box display="flex">

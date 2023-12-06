@@ -6,7 +6,7 @@ import cors from 'cors';
 
 //Routes
 import productRoutes from './routes/productRoutes.js';
-
+import userRoutes from './routes/userRoutes.js';
 
 
 
@@ -17,6 +17,7 @@ app.use(cors());
 
 
 app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
 
 //localhost:5000//api/products
 

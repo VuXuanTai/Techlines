@@ -14,6 +14,7 @@ import {
   SimpleGrid,
   Spinner,
   Stack,
+  useToast,
   Text,
   Wrap,
 } from "@chakra-ui/react";
@@ -23,12 +24,17 @@ import { useParams } from "react-router-dom";
 import { getProduct } from "../redux/actions/productActions";
 import { useEffect, useState } from "react";
 import Star from "../components/Star";
+import { addCartItem } from '../redux/actions/cartActions';
+
+
 
 const ProductScreen = () => {
   const [amount, setAmount] = useState(1);
   const { id } = useParams(1);
   const dispatch = useDispatch();
   const { loading, error, product } = useSelector((state) => state.product);
+  const { cartItems } = useSelector((state) => state.cart);
+  const toast = useToast();
 
   useEffect(() => {
     dispatch(getProduct(id));
@@ -41,6 +47,19 @@ const ProductScreen = () => {
     if (input === "minus") {
       setAmount(amount - 1);
     }
+  };
+  const addItem = () => {
+    if (cartItems.some((cartItem) => cartItem.id === id)) {
+      cartItems.find((cartItem) => cartItem.id === id);
+      dispatch(addCartItem(id, amount));
+    } else {
+      dispatch(addCartItem(id, amount));
+    }
+    toast({
+      description: "Item has been added",
+      status: "success",
+      isClosable: true,
+    });
   };
 
   return (
@@ -152,7 +171,7 @@ const ProductScreen = () => {
                     variant="outline"
                     isDisabled={product.stock === 0}
                     colorScheme="cyan"
-                    onClick={() => {}}
+                    onClick={() => addItem()}
                   >
                     Add to Cart
                   </Button>
@@ -209,13 +228,14 @@ const ProductScreen = () => {
                       <Star rating={product.rating} star={3} />
                       <Star rating={product.rating} star={4} />
                       <Star rating={product.rating} star={5} />
-                      <Text fontWeight='semibold' ml='4px'>
+                      <Text fontWeight="semibold" ml="4px">
                         {review.title && review.title}
                       </Text>
                     </Flex>
-                    <Box py='12px'>{review.comment}</Box>
-                    <Text fontSize='sm' color='gray.400'>
-                      by {review.name}, {new Date(review.createdAt).toDateString()}
+                    <Box py="12px">{review.comment}</Box>
+                    <Text fontSize="sm" color="gray.400">
+                      by {review.name},{" "}
+                      {new Date(review.createdAt).toDateString()}
                     </Text>
                   </Box>
                 ))}
