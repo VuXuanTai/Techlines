@@ -11,90 +11,61 @@ import {
   Heading,
   Stack,
   Text,
+  useBreakpointValue,
   useToast,
 } from "@chakra-ui/react";
+
+import axios from "axios";
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link as ReactLink, useLocation, useNavigate } from "react-router-dom";
+import { Link as ReactLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import PasswordField from "../components/PasswordField";
-import PasswordForgottenForm from "../components/PasswordForgottenForm";
 import TextField from "../components/TextField";
-import { login, googleLogin } from "../redux/actions/userActions";
-import { useGoogleLogin } from "@react-oauth/google";
-import axios from "axios";
-import { FcGoogle } from "react-icons/fc";
+import {register } from "../redux/actions/userActions";
 
-const LoginScreen = () => {
-  const dispatch = useDispatch();
+const RegistrationScreen = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const dispatch = useDispatch();
   const redirect = "/products";
   const toast = useToast();
-
-  const { loading, error, userInfo, serverMsg } = useSelector(
-    (state) => state.user
-  );
-  const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const { loading, error, userInfo } = useSelector((state) => state.user);
+  const headingBR = useBreakpointValue({ base: "xs", md: "sm" });
+  const boxBR = useBreakpointValue({ base: "transparent", md: "bg-surface" });
 
   useEffect(() => {
     if (userInfo) {
-      if (location.state?.from) {
-        navigate(location.state.from);
-      } else {
-        navigate(redirect);
-      }
+      navigate(redirect);
       toast({
-        description: "Login successful.",
+        description: userInfo.firstLogin
+          ? "Account created. Welcome aboard."
+          : `Welcome back ${userInfo.name}`,
         status: "success",
         isClosable: true,
       });
     }
+  }, [userInfo, redirect, error, navigate, toast]);
 
-    if (serverMsg) {
-      toast({
-        description: `${serverMsg}`,
-        status: "success",
-        isClosable: true,
-      });
-    }
-  }, [
-    userInfo,
-    redirect,
-    error,
-    navigate,
-    location.state,
-    toast,
-    showPasswordReset,
-    serverMsg,
-  ]);
-
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (response) => {
-      const userInfo = await axios
-        .get("https://www.googleapis.com/oauth2/v3/userinfo", {
-          headers: { Authorization: `Bearer ${response.access_token}` },
-        })
-        .then((res) => res.data);
-      const { sub, email, name, picture } = userInfo;
-      dispatch(googleLogin(sub, email, name, picture));
-    },
-  });
 
   return (
     <Formik
-      initialValues={{ email: "", password: "" }}
+      initialValues={{ email: "", password: "", name: "" }}
       validationSchema={Yup.object({
+        name: Yup.string().required("A name is required."),
         email: Yup.string()
-          .email("Invalid email.")
-          .required("An email address is required."),
+          .email("Invalid email")
+          .required("This email address is required."),
         password: Yup.string()
           .min(1, "Password is too short - must contain at least 1 character.")
           .required("Password is required."),
+        confirmPassword: Yup.string()
+          .min(1, "Password is too short - must contain at least 1 character.")
+          .required("Password is required.")
+          .oneOf([Yup.ref("password"), null], "Passwords must match"),
       })}
       onSubmit={(values) => {
-        dispatch(login(values.email, values.password));
+        dispatch(register(values.name, values.email, values.password));
       }}
     >
       {(formik) => (
@@ -107,18 +78,16 @@ const LoginScreen = () => {
           <Stack spacing="8">
             <Stack spacing="6">
               <Stack spacing={{ base: "2", md: "3" }} textAlign="center">
-                <Heading fontSize={{ base: "md", lg: "xl" }}>
-                  Log in to your account
-                </Heading>
+                <Heading size={headingBR}>Create an account.</Heading>
                 <HStack spacing="1" justify="center">
-                  <Text>Don't have an account?</Text>
+                  <Text color="muted">Already a user?</Text>
                   <Button
                     as={ReactLink}
-                    to="/registration"
+                    to="/login"
                     variant="link"
                     colorScheme="cyan"
                   >
-                    Sign up
+                    Sign in
                   </Button>
                 </HStack>
               </Stack>
@@ -126,7 +95,7 @@ const LoginScreen = () => {
             <Box
               py={{ base: "0", md: "8" }}
               px={{ base: "4", md: "10" }}
-              bg={{ base: "transparent", md: "bg-surface" }}
+              bg={{ boxBR }}
               boxShadow={{ base: "none", md: "xl" }}
             >
               <Stack spacing="6" as="form" onSubmit={formik.handleSubmit}>
@@ -147,6 +116,12 @@ const LoginScreen = () => {
                   <FormControl>
                     <TextField
                       type="text"
+                      name="name"
+                      placeholder="Your first and last name."
+                      label="Full name"
+                    />
+                    <TextField
+                      type="text"
                       name="email"
                       placeholder="you@example.com"
                       label="Email"
@@ -154,20 +129,15 @@ const LoginScreen = () => {
                     <PasswordField
                       type="password"
                       name="password"
-                      placeholder="your password"
+                      placeholder="Your password"
                       label="Password"
                     />
-
-                    <Button
-                      my="2"
-                      onClick={() => setShowPasswordReset(!showPasswordReset)}
-                      size="sm"
-                      colorScheme="cyan"
-                      variant="outline"
-                    >
-                      Forgot Password ?
-                    </Button>
-                    {showPasswordReset && <PasswordForgottenForm />}
+                    <PasswordField
+                      type="password"
+                      name="confirmPassword"
+                      placeholder="Confirm your new password"
+                      label="Confirm your password"
+                    />
                   </FormControl>
                 </Stack>
                 <Stack spacing="6">
@@ -178,17 +148,7 @@ const LoginScreen = () => {
                     isLoading={loading}
                     type="submit"
                   >
-                    Sign in
-                  </Button>
-                  <Button
-                    leftIcon={<FcGoogle />}
-                    colorScheme="cyan"
-                    size="lg"
-                    fontSize="md"
-                    isLoading={loading}
-                    onClick={() => handleGoogleLogin()}
-                  >
-                    Google sign in
+                    Sign up
                   </Button>
                 </Stack>
               </Stack>
@@ -200,4 +160,4 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default RegistrationScreen;
