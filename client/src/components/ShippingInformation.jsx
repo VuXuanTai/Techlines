@@ -83,7 +83,7 @@ const ShippingInformation = () => {
                   </Stack>
                   <Radio value="withoutExpress">
                     <Box>
-                      <Text fontWeight="bold">standard 4.99</Text>
+                      <Text fontWeight="bold">Standard 4.99</Text>
                       <Text>Dispatched in 2 - 4 days</Text>
                     </Box>
                   </Radio>

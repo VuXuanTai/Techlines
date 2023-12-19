@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 import { sendVerificationEmail } from "../middleware/sendVerificationEmail.js";
 import { sendPasswordResetEmail } from "../middleware/sendPasswordResetEmail.js";
-import { protectRoute } from "../middleware/authMiddleware.js";
+import { protectRoute, admin } from "../middleware/authMiddleware.js";
 import Order from "../models/Order.js";
 
 const userRoutes = express.Router();
@@ -75,9 +75,7 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400).send("We could not register you.");
-    throw new Error(
-      "Something went wrong. Please check your information and try again."
-    );
+    throw new Error("Something went wrong. Please check your information and try again.");
   }
 });
 
@@ -87,9 +85,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
   const user = req.user;
   user.active = true;
   await user.save();
-  res.json(
-    "Thanks for activitiating your account. You can close this window now."
-  );
+  res.json("Thanks for activitiating your account. You can close this window now.");
 });
 
 // password reset request
@@ -179,21 +175,38 @@ const googleLogin = asyncHandler(async (req, res) => {
 });
 
 const getUserOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({user: req.params.id});
-  if(orders) {
+  const orders = await Order.find({ user: req.params.id });
+  if (orders) {
     res.json(orders);
   } else {
-    res.status(404)
-    throw new Error('No Orders found')
+    res.status(404);
+    throw new Error("No Orders found");
   }
-})
+});
+
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
+const deleteUser = asyncHandler(async (req, res) => {
+	try {
+		const user = await User.findByIdAndDelete(req.params.id);
+		res.json(user);
+	} catch (error) {
+		res.status(404).send('This user could not be found.');
+		throw new Error('This user could not be found.');
+	}
+});
 
 userRoutes.route("/login").post(loginUser);
 userRoutes.route("/register").post(registerUser);
 userRoutes.route("/verify-email").get(protectRoute, verifyEmail);
 userRoutes.route("/password-reset-request").post(passwordResetRequest);
-userRoutes.route("/password-reset").post(passwordReset);
+userRoutes.route("/password-reset").post(protectRoute, passwordReset);
 userRoutes.route("/google-login").post(googleLogin);
 userRoutes.route("/:id").get(protectRoute, getUserOrders);
+userRoutes.route("/").get(protectRoute, admin, getUsers);
+userRoutes.route("/:id").delete(protectRoute, admin, deleteUser);
 
 export default userRoutes;
