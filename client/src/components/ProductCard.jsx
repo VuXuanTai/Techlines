@@ -89,7 +89,7 @@ const ProductCard = ({ product, loading }) => {
         <Flex justify="space-between" alignItems="center" mt="2">
           <Badge colorScheme="cyan">{product.category}</Badge>
           <Text fontSize="xl" fontWeight="semibold" color="cyan.600">
-            {product.price} VND
+            ${product.price}
           </Text>
         </Flex>
         <Flex justify="space-between" mt="2px">
