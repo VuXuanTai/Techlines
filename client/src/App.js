@@ -19,6 +19,7 @@ import CancelScreen from "./screens/CancelScreen";
 import YourOrdersScreen from "./screens/YourOrdersScreen";
 import SuccessScreen from "./screens/SuccessScreen";
 import AdminConsoleScreen from "./screens/AdminConsoleScreen";
+import HotDealsScreen from "./screens/HotDealsScreen";
 
 function App() {
   const [googleClient, setGoogleClient] = useState(null);
@@ -53,6 +54,7 @@ function App() {
               <Route path="/cancel" element={<CancelScreen />} />
               <Route path="/order-history" element={<YourOrdersScreen />} />
               <Route path="/success" element={<SuccessScreen />} />
+              <Route path="/hot-deals" element={<HotDealsScreen />} />
               <Route path="/admin-console" element={<AdminConsoleScreen />} />
             </Routes>
           </main>
