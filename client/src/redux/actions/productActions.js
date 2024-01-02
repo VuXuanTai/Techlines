@@ -84,6 +84,47 @@ export const getProduct = (id) => async (dispatch) => {
 	}
 };
 
+export const getProductCategory = (category) => async (dispatch) => {
+	dispatch(setLoading(true));
+	try {
+		const { data } = await axios.get(`/api/products/category/${category}`);
+		dispatch(setProduct(data));
+		console.log(data);
+	} catch (error) {
+		dispatch(
+			setError(
+				error.response && error.response.data.message
+					? error.response.data.message
+					: error.message
+					? error.message
+					: 'An expected error has occured. Please try again later.'
+			)
+		);
+	}
+};
+
+export const getProductsByBrand = (brand) => async (dispatch) => {
+	dispatch(setLoading());
+  
+	try {
+	  const { data } = await axios.get(`/api/products/brand/${brand}`);
+	  const { products, pagination } = data;
+  
+	  dispatch(setProducts(products));
+	  dispatch(setPagination(pagination));
+	} catch (error) {
+	  dispatch(
+		setError(
+		  error.response && error.response.data.message
+			? error.response.data.message
+			: error.message
+			? error.message
+			: 'An expected error has occurred. Please try again later.'
+		)
+	  );
+	}
+  };
+
 export const createProductReview = (productId, userId, comment, rating, title) => async (dispatch, getState) => {
 	const {
 		user: { userInfo },

@@ -8,6 +8,7 @@ import {
   Tooltip,
   Skeleton,
   useToast,
+  useColorModeValue as mode,
 } from "@chakra-ui/react";
 import { BiExpand } from "react-icons/bi";
 import React, { useState } from "react";
@@ -50,15 +51,31 @@ const ProductCard = ({ product, loading }) => {
       isClosable: true,
     })
   };
+  const hoverTooltip = () =>  {
+     const name = product.name
+     const brand = product.brand
+     const subtitle = product.subtitle
+
+     return (
+      <>
+        <Text fontWeight='bold' fontSize='lg'>{brand} {name}</Text> 
+        <Text>Thông tin: {subtitle}</Text>
+      </>
+     )
+  }
 
   return (
     <Skeleton isLoaded={!loading} _hover={{ size: "1.5" }}>
+      {/* <Tooltip label={product.brand + ' ' + product.name  + product.subtitle} fontSize="sm"> */}
+      <Tooltip rounded='15px' label={hoverTooltip()}>
       <Box
         _hover={{ transform: "scale(1.08)", transitionDuration: "0.5s" }}
         borderWidth="1px"
+        borderRadius="20px"
         overflow="hidden"
         p="4"
         shadow="md"
+        bgColor='white'
       >
         <Image
           onMouseEnter={() => setIsShown(true)}
@@ -69,25 +86,25 @@ const ProductCard = ({ product, loading }) => {
           height="200px"
         />
         {product.stock < 5 ? (
-          <Badge colorScheme="yellow">only {product.stock} left</Badge>
+          <Badge textColor='black' colorScheme="yellow">only {product.stock} left</Badge>
         ) : product.stock < 1 ? (
           <Badge colorScheme="red">Sold out</Badge>
         ) : (
-          <Badge colorScheme="green">In Stock</Badge>
+          <Badge textColor='green' colorScheme="green">In Stock</Badge>
         )}
         {product.productIsNew && (
-          <Badge ml={2} colorScheme="purple">
+          <Badge ml={2} color="purple">
             \ New
           </Badge>
         )}
-        <Text noOfLines={1} fontSize="xl" fontWeight="semibold" mt="2">
+        <Text noOfLines={1} fontSize="xl" fontWeight="semibold" mt="2" color='black'>
           {product.brand} {product.name}
         </Text>
         <Text noOfLines={1} fontSize="md" color="gray.600">
           {product.subtitle}
         </Text>
         <Flex justify="space-between" alignItems="center" mt="2">
-          <Badge colorScheme="cyan">{product.category}</Badge>
+          <Badge  colorScheme="cyan">{product.category}</Badge>
           <Text fontSize="xl" fontWeight="semibold" color="cyan.600">
             ${product.price}
           </Text>
@@ -136,6 +153,7 @@ const ProductCard = ({ product, loading }) => {
           </Tooltip>
         </Flex>
       </Box>
+      </Tooltip>
     </Skeleton>
   );
 };

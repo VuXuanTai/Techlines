@@ -19,7 +19,9 @@ import CancelScreen from "./screens/CancelScreen";
 import YourOrdersScreen from "./screens/YourOrdersScreen";
 import SuccessScreen from "./screens/SuccessScreen";
 import AdminConsoleScreen from "./screens/AdminConsoleScreen";
-import HotDealsScreen from "./screens/HotDealsScreen";
+import BuildSystemScreen from "./screens/BuildSystemScreen";
+import BrandScreen from "./screens/BrandScreen";
+import BrandProductsScreen from "./screens/BrandProductScreen";
 
 function App() {
   const [googleClient, setGoogleClient] = useState(null);
@@ -45,6 +47,7 @@ function App() {
               <Route path="/products" element={<ProductsScreen />} />
               <Route path="/" element={<LandingScreen />} />
               <Route path="/product/:id" element={<ProductScreen />} />
+              <Route path="/products/brand/:brandName" element={<BrandProductsScreen />} />
               <Route path="/email-verify/:token" element={<EmailVerificationScreen />} />
               <Route path="/cart" element={<CartScreen />} />
               <Route path="/login" element={<LoginScreen />} />
@@ -54,8 +57,9 @@ function App() {
               <Route path="/cancel" element={<CancelScreen />} />
               <Route path="/order-history" element={<YourOrdersScreen />} />
               <Route path="/success" element={<SuccessScreen />} />
-              <Route path="/hot-deals" element={<HotDealsScreen />} />
+              <Route path="/thuong-hieu" element={<BrandScreen />} />
               <Route path="/admin-console" element={<AdminConsoleScreen />} />
+              <Route path="/build-system" element={<BuildSystemScreen />} />
             </Routes>
           </main>
           <Footer />
