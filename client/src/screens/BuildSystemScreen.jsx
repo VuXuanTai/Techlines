@@ -1,8 +1,5 @@
 import { Box, Stack, Heading, Tabs, TabList, Tab, TabPanels, TabPanel, Text } from "@chakra-ui/react";
-import UsersTab from "../components/UsersTab";
-import OrdersTab from "../components/OrdersTab";
-import ReviewsTab from "../components/ReviewsTab";
-import ProductsTab from "../components/ProductsTab";
+
 import BuildingTab from "../components/BuildingTab";
 
 const BuildSystemScreen = () => {
@@ -32,7 +29,7 @@ const BuildSystemScreen = () => {
                 <BuildingTab />
               </TabPanel>
               <TabPanel>
-                <OrdersTab />
+                <BuildingTab />
               </TabPanel>
               <TabPanel>
                 <BuildingTab />

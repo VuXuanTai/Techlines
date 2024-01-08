@@ -28,11 +28,10 @@ import {
   deleteOrder,
   resetErrorAndRemoval,
   setDelivered,
-  cancelOrderHandler, resetCancelOrderFlagHandler
+  resetCancelOrderFlagHandler,
 } from "../redux/actions/adminActions";
 import ConfirmRemovalAlert from "./ConfirmRemovalAlert";
 import { TbTruckDelivery } from "react-icons/tb";
-import OrderStatusStepper from "./OrderStatusStepper";
 
 const OrdersTab = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -63,8 +62,8 @@ const OrdersTab = () => {
 
     if (cancelOrderFlag) {
       toast({
-        description: 'Order has been canceled.',
-        status: 'success',
+        description: "Order has been canceled.",
+        status: "success",
         isClosable: true,
       });
       dispatch(resetCancelOrderFlagHandler());
@@ -81,9 +80,9 @@ const OrdersTab = () => {
     dispatch(setDelivered(order._id));
   };
 
-  const handleCancelOrder = (orderId) => {
-    dispatch(cancelOrderHandler(orderId));
-  };
+  // const handleCancelOrder = (orderId) => {
+  //   dispatch(cancelOrderHandler(orderId));
+  // };
 
   return (
     <Box>
@@ -157,9 +156,9 @@ const OrdersTab = () => {
                               <Text ml="5px">Delivered</Text>
                             </Button>
                           )}
-                          <Button mt="4px" variant="outline" onClick={() => handleCancelOrder(order._id)}>
+                          {/* <Button mt="4px" variant="outline" onClick={() => handleCancelOrder(order._id)}>
                             Cancel Order
-                          </Button>
+                          </Button> */}
                         </Flex>
                       </Td>
                     </Tr>

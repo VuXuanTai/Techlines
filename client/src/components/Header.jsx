@@ -22,7 +22,6 @@ import {
   MenuList,
   Spacer,
   useToast,
-  Toast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { BsPhoneFlip } from "react-icons/bs";
@@ -44,7 +43,7 @@ const Links = [
   { name: "Tất Cả Sản Phẩm", route: "/products" },
   { name: "Thương Hiệu", route: "/thuong-hieu" },
   { name: "Xây Dựng Hệ Thống", route: "/build-system" },
-  { name: "Liên Hệ", route: "/services" },
+  // { name: "Liên Hệ", route: "/services" },
 ];
 
 const Header = () => {
