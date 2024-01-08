@@ -55,6 +55,9 @@ const stripePayment = async (req, res) => {
     shippingPrice: data.shipping,
     subtotal: data.subtotal,
     totalPrice: Number(data.subtotal + data.shipping).toFixed(2),
+    status: "Paid", // Cập nhật trạng thái thành "Paid"
+    isPaid: true, // Đánh dấu đơn hàng đã thanh toán
+    deliveredAt: new Date(), // Thiết lập thời điểm giao hàng
   });
 
   const newOrder = await order.save();

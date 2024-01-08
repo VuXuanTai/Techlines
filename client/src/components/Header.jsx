@@ -41,11 +41,10 @@ import { FcGoogle } from "react-icons/fc";
 import { googleLogout } from "@react-oauth/google";
 
 const Links = [
-  { name: "Giải Pháp", route: "/giai-phap" },
   { name: "Tất Cả Sản Phẩm", route: "/products" },
   { name: "Thương Hiệu", route: "/thuong-hieu" },
   { name: "Xây Dựng Hệ Thống", route: "/build-system" },
-  { name: "Dịch Vụ", route: "/services" },
+  { name: "Liên Hệ", route: "/services" },
 ];
 
 const Header = () => {

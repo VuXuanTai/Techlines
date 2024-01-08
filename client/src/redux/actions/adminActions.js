@@ -9,6 +9,8 @@ import {
   getUsers,
   userDelete,
   orderDelete,
+  setCancelOrderFlag,
+  resetCancelOrderFlag,
 } from "../slices/admin";
 
 export const getAllUsers = () => async (dispatch, getState) => {
@@ -222,4 +224,29 @@ export const removeReview = (productId, reviewId) => async (dispatch, getState) 
         : "An expected error has occured. Please try again later."
     );
   }
+};
+export const cancelOrderHandler = (orderId) => async (dispatch,getState) => {
+  setLoading();
+	const {
+		user: { userInfo },
+	} = getState();
+
+	const config = { headers: { Authorization: `Bearer ${userInfo.token}`, 'Content-Type': 'application/json' } };
+
+  try {
+		const { data } = await axios.put(`api/orders/${orderId}/cancel`, config);
+		dispatch(setCancelOrderFlag(data));
+	} catch (error) {
+		setError(
+			error.response && error.response.data.message
+				? error.response.data.message
+				: error.message
+				? error.message
+				: 'An expected error has occured. Please try again later.'
+		);
+	}
+};
+
+export const resetCancelOrderFlagHandler = () => async (dispatch) => {
+  dispatch(resetCancelOrderFlag());
 };

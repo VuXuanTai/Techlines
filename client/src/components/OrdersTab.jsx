@@ -23,16 +23,23 @@ import {
 import { CheckCircleIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllOrders, deleteOrder, resetErrorAndRemoval, setDelivered } from "../redux/actions/adminActions";
+import {
+  getAllOrders,
+  deleteOrder,
+  resetErrorAndRemoval,
+  setDelivered,
+  cancelOrderHandler, resetCancelOrderFlagHandler
+} from "../redux/actions/adminActions";
 import ConfirmRemovalAlert from "./ConfirmRemovalAlert";
 import { TbTruckDelivery } from "react-icons/tb";
+import OrderStatusStepper from "./OrderStatusStepper";
 
 const OrdersTab = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
   const [orderToDelete, setOrderToDelete] = useState("");
   const dispatch = useDispatch();
-  const { error, loading, orders, deliveredFlag, orderRemoval } = useSelector((state) => state.admin);
+  const { error, loading, orders, deliveredFlag, orderRemoval, cancelOrderFlag } = useSelector((state) => state.admin);
   const toast = useToast();
 
   useEffect(() => {
@@ -53,7 +60,16 @@ const OrdersTab = () => {
         isClosable: true,
       });
     }
-  }, [dispatch, toast, orderRemoval, deliveredFlag]);
+
+    if (cancelOrderFlag) {
+      toast({
+        description: 'Order has been canceled.',
+        status: 'success',
+        isClosable: true,
+      });
+      dispatch(resetCancelOrderFlagHandler());
+    }
+  }, [dispatch, toast, orderRemoval, deliveredFlag, cancelOrderFlag]);
 
   const openDeleteConfirmBox = (order) => {
     setOrderToDelete(order);
@@ -63,6 +79,10 @@ const OrdersTab = () => {
   const onSetToDelivered = (order) => {
     dispatch(resetErrorAndRemoval());
     dispatch(setDelivered(order._id));
+  };
+
+  const handleCancelOrder = (orderId) => {
+    dispatch(cancelOrderHandler(orderId));
   };
 
   return (
@@ -82,6 +102,7 @@ const OrdersTab = () => {
         </Wrap>
       ) : (
         <Box>
+          {/* <OrderStatusStepper orders={orders} /> */}
           <TableContainer>
             <Table variant="simple">
               <Thead>
@@ -123,7 +144,7 @@ const OrdersTab = () => {
                       </Td>
                       <Td>${order.shippingPrice}</Td>
                       <Td>${order.totalPrice}</Td>
-                      <Td>{order.isDelivered ? <CheckCircleIcon /> : "Pending"}</Td>
+                      <Td>{order.isDelivered ? <CheckCircleIcon /> : order.status}</Td>
                       <Td>
                         <Flex direction="column">
                           <Button variant="outline" onClick={() => openDeleteConfirmBox(order)}>
@@ -136,6 +157,9 @@ const OrdersTab = () => {
                               <Text ml="5px">Delivered</Text>
                             </Button>
                           )}
+                          <Button mt="4px" variant="outline" onClick={() => handleCancelOrder(order._id)}>
+                            Cancel Order
+                          </Button>
                         </Flex>
                       </Td>
                     </Tr>
