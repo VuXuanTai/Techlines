@@ -17,7 +17,7 @@ import { Link as ReactLink } from "react-router-dom";
 import { BsPhoneFlip } from "react-icons/bs";
 
 const LandingScreen = () => (
-  <Box maxW="8xl" mx="auto" p={{ base: "0", lg: "12" }} minH="6xl">
+  <Box maxW="8xl" mx="auto" p={{ base: "0", lg: "12" }} minH="3xl">
     <Stack direction={{ base: "column-reverse", lg: "row" }} spacing={{ base: "0", lg: "20" }}>
       <Box
         width={{ lg: "sm" }}
@@ -27,7 +27,7 @@ const LandingScreen = () => (
         px={{ base: "6", md: "8", lg: "0" }}
         py={{ base: "6", md: "8", lg: "12" }}
       >
-        <Stack spacing={{ base: "8", lg: "10" }}>
+        <Stack spacing={{ base: "8", lg: "10" }} mt='150px'>
           <Stack spacing={{ base: "2", lg: "4" }}>
             <Flex alignItems="center">
               <Icon as={BsPhoneFlip} h={12} w={12} color={mode("cyan.500", "yellow.200")} />

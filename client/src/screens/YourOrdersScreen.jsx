@@ -64,13 +64,13 @@ const YourOrdersScreen = () => {
                 {orders.map((order) => (
                   <Tr key={order._id}>
                     <Td>{order._id}</Td>
-                    <Td>{new Date(order.createAt).toDateString()}</Td>
+                    <Td>{new Date(order.createdAt).toDateString()}</Td>
                     <Td>${order.totalPrice}</Td>
                     <Td>
                       {order.orderItems.map((item) => (
                         <UnorderedList key={item._id}>
                           <ListItem>
-                            {item.qty} x {item.name} (${item.price} each)
+                            {item.qty} x {item.brand} {item.name} (${item.price} each)
                           </ListItem>
                         </UnorderedList>
                       ))}
